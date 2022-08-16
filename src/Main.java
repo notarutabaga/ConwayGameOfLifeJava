@@ -1,8 +1,23 @@
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) throws InterruptedException {
-        int numRows = 10 + (int)(Math.random() * ((20 - 10) + 1));
-        int numCols = 10 + (int)(Math.random() * ((20 - 10) + 1));
+        Scanner scanner = new Scanner(System.in);
+        int numRows, numCols;
 
+        int[] dimensions = null;
+        do {
+            System.out.print("Enter dimensions (ROWSxCOLUMNS) between 10 and 20 inclusive or R for random: ");
+            String input = scanner.nextLine();
+            try {
+                dimensions = getDimensions(input);
+            } catch (Exception e) {
+                System.out.println("\tInvalid input!\n");
+            }
+        } while(dimensions == null);
+
+        numRows = dimensions[0];
+        numCols = dimensions[1];
         Game game = new Game(numRows, numCols);
         game.initGame();
 
@@ -31,6 +46,29 @@ public class Main {
 
             Thread.sleep(1000);
         }
+    }
+
+    public static int[] getDimensions(String input) throws Exception {
+        int[] dimensions = new int[2];
+        input = input.trim();
+
+        if (input.equalsIgnoreCase("R")) {
+            dimensions[0] = 10 + (int)(Math.random() * ((20 - 10) + 1));
+            dimensions[1] = 10 + (int)(Math.random() * ((20 - 10) + 1));
+        } else {
+            String[] parsedInput = input.split("[xX]");
+            if (parsedInput.length > 2) {
+                throw new Exception();
+            }
+            dimensions[0] = Integer.parseInt(parsedInput[0]);
+            dimensions[1] = Integer.parseInt(parsedInput[1]);
+
+            if (dimensions[0] < 10 || dimensions[0] > 20 || dimensions[1] < 10 || dimensions[1] > 20) {
+                throw new Exception();
+            }
+        }
+
+        return dimensions;
     }
 }
 
